@@ -1,5 +1,5 @@
 {
-  "name": "mastra-backend",
+  "name": "agent-studio",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
@@ -19,6 +19,7 @@
     "start": "mastra start"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^2.0.35",
     "@mastra/core": "^1.37.1",
     "@mastra/duckdb": "^1.4.0",
     "@mastra/evals": "^1.2.3",
