@@ -1,0 +1,31 @@
+{
+  "name": "mastra-backend",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^25.9.1",
+    "mastra": "^1.10.2"
+  },
+  "peerDependencies": {
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "mastra dev",
+    "build": "mastra build",
+    "start": "mastra start"
+  },
+  "dependencies": {
+    "@mastra/core": "^1.37.1",
+    "@mastra/duckdb": "^1.4.0",
+    "@mastra/evals": "^1.2.3",
+    "@mastra/libsql": "^1.11.1",
+    "@mastra/loggers": "^1.1.1",
+    "@mastra/memory": "^1.20.0",
+    "@mastra/observability": "^1.14.0",
+    "zod": "^4"
+  }
+}
