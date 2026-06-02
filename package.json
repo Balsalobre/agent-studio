@@ -21,6 +21,7 @@
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.35",
     "@mastra/core": "^1.37.1",
+    "@mastra/deployer-vercel": "^1.1.32",
     "@mastra/duckdb": "^1.4.0",
     "@mastra/evals": "^1.2.3",
     "@mastra/libsql": "^1.11.1",

@@ -1,4 +1,5 @@
 import { Mastra } from "@mastra/core/mastra";
+import { VercelDeployer } from "@mastra/deployer-vercel";
 import { PinoLogger } from "@mastra/loggers";
 import {
   Observability,
@@ -22,6 +23,7 @@ const storage = new PostgresStore({
 });
 
 export const mastra = new Mastra({
+  deployer: new VercelDeployer(),
   workflows: { weatherWorkflow },
   agents: { weatherAgent },
   scorers: {
