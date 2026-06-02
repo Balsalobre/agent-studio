@@ -1,4 +1,5 @@
 import { Mastra } from "@mastra/core/mastra";
+import { SimpleAuth } from '@mastra/core/server'
 import { VercelDeployer } from "@mastra/deployer-vercel";
 import { PinoLogger } from "@mastra/loggers";
 import {
@@ -16,14 +17,29 @@ import {
 } from "./scorers/weather-scorer";
 
 import { PostgresStore } from "@mastra/pg";
+import { env } from "./env";
 
 const storage = new PostgresStore({
   id: "pg-storage",
-  connectionString: process.env.DATABASE_URL,
+  connectionString: env.databaseUrl,
 });
+
+type User = {
+  id: string;
+  name: string;
+  role: "admin" | "user";
+};
 
 export const mastra = new Mastra({
   deployer: new VercelDeployer(),
+  server: {
+    auth: new SimpleAuth<User>({
+      tokens: {
+        [env.adminApiToken]: { id: "user-1", name: "Admin User", role: "admin" },
+        [env.userApiToken]: { id: "user-2", name: "Regular User", role: "user" },
+      },
+    }),
+  },
   workflows: { weatherWorkflow },
   agents: { weatherAgent },
   scorers: {
