@@ -8,6 +8,7 @@ import {
   MastraPlatformExporter,
   SensitiveDataFilter,
 } from "@mastra/observability";
+import { testRoutes } from "./test-endpoint";
 import { weatherWorkflow } from "./workflows/weather-workflow";
 import { weatherAgent } from "./agents/weather-agent";
 import {
@@ -39,6 +40,7 @@ export const mastra = new Mastra({
         [env.userApiToken]: { id: "user-2", name: "Regular User", role: "user" },
       },
     }),
+    apiRoutes: testRoutes,
   },
   workflows: { weatherWorkflow },
   agents: { weatherAgent },
