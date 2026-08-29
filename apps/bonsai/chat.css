@@ -1,0 +1,584 @@
+/* chat.css — employee chat surface (the star) + inline widgets */
+
+/* ---------- shared chat shell ---------- */
+.chat { position: relative; height: 100%; display: flex; flex-direction: column; min-width: 0; }
+
+.chat-top {
+  height: 60px; flex: 0 0 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 22px; border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(10px); position: relative; z-index: 12;
+}
+.chat-top-left { display: flex; align-items: center; gap: 12px; }
+.chat-top .ctx {
+  display: flex; align-items: center; gap: 8px; padding: 5px 11px 5px 7px;
+  border: 1px solid var(--line-2); border-radius: var(--r-pill); background: var(--surface-1);
+  font-size: 12.5px; color: var(--fg-2); white-space: nowrap;
+}
+.chat-top-right { display: flex; align-items: center; gap: 8px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 10px; border: 1px solid transparent; background: transparent;
+  color: var(--fg-3); display: grid; place-items: center; transition: all var(--dur) var(--ease);
+}
+.icon-btn:hover { color: var(--fg); background: var(--surface-hover); }
+
+.chat-body { flex: 1; min-height: 0; display: flex; }
+
+/* scroll region */
+.thread-scroll { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+.thread-col { max-width: 760px; margin: 0 auto; padding: 28px 24px 12px; display: flex; flex-direction: column; gap: 26px; }
+
+/* ---------- empty / hero state ---------- */
+.hero { max-width: 720px; margin: 0 auto; width: 100%; padding: 0 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; }
+.hero-mark { width: 60px; height: 60px; border-radius: 17px; background: var(--tile-bg); border: 1px solid var(--line-2); display: grid; place-items: center; margin-bottom: 22px; box-shadow: var(--glow-accent); }
+.hero h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(26px, 3.4vw, 38px); letter-spacing: -0.025em; color: var(--fg); }
+.hero .greet-accent { color: var(--accent); }
+.hero .sub { color: var(--fg-2); font-size: 15.5px; margin-top: 10px; max-width: 480px; }
+
+/* daily nudge pill in hero */
+.nudge {
+  margin: 22px auto 0; display: inline-flex; align-items: center; gap: 12px;
+  padding: 8px 8px 8px 16px; border: 1px solid var(--line-2); border-radius: var(--r-pill);
+  background: var(--surface-1); max-width: 100%;
+}
+.nudge .t { font-size: 13.5px; color: var(--fg-2); text-align: left; }
+.nudge .t b { color: var(--fg); font-weight: 600; }
+
+/* ---------- composer ---------- */
+.composer-wrap { padding: 14px 24px 18px; transition: height var(--dur) var(--ease-emph), padding var(--dur) var(--ease-emph); }
+/* Empty state: composer sits high with the workflow pills below it.
+   Once the conversation starts (is-chatting) it drops to the bottom
+   as a compact bar — ChatGPT-style. */
+.composer-wrap.is-chatting { display: flex; flex-direction: column; justify-content: flex-end; }
+.composer-inner { max-width: 760px; margin: 0 auto; }
+.composer {
+  display: flex; align-items: flex-end; gap: 8px;
+  background: var(--surface-3); border: 1px solid var(--line-2); border-radius: 22px;
+  padding: 8px 8px 8px 16px; transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.composer:focus-within { border-color: color-mix(in srgb, var(--accent) 45%, var(--line-2)); box-shadow: 0 0 0 3px var(--accent-tint-2); }
+.composer textarea {
+  flex: 1; resize: none; border: none; background: transparent; color: var(--fg);
+  font-family: inherit; font-size: 15px; line-height: 1.5; padding: 9px 0; max-height: 160px; outline: none;
+}
+.composer textarea::placeholder { color: var(--fg-muted); }
+.composer .tools { display: flex; align-items: center; gap: 2px; }
+.send-btn {
+  width: 40px; height: 40px; border-radius: 13px; border: none; flex: 0 0 auto;
+  background: var(--accent); color: var(--fg-on-accent); display: grid; place-items: center;
+  transition: background var(--dur) var(--ease), transform var(--dur-fast) var(--ease), opacity var(--dur) var(--ease);
+}
+.send-btn:hover { background: var(--accent-600); }
+.send-btn:active { transform: scale(.94); }
+.send-btn:disabled { opacity: .4; cursor: default; background: var(--surface-3); color: var(--fg-3); }
+.composer-hint { text-align: center; font-size: 11.5px; color: var(--fg-muted); margin-top: 10px; }
+
+/* tres workflows principales · estilo píldora (ChatGPT-like) */
+.workflows { display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; margin-top: 13px; }
+.wf {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border: 1px solid var(--line-2); border-radius: var(--r-pill);
+  background: transparent; color: var(--fg-2); cursor: pointer;
+  font-size: 13.5px; font-weight: 500; line-height: 1; white-space: nowrap;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.wf svg { color: var(--accent); flex: 0 0 auto; }
+.wf:hover { background: var(--surface-hover); border-color: var(--line-strong); color: var(--fg); }
+.wf:active { background: var(--surface-2); }
+
+/* suggestion chips */
+.suggests { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+.suggest {
+  display: flex; align-items: center; gap: 11px; text-align: left;
+  padding: 11px 15px; border: 1px solid var(--line-2); border-radius: var(--r-md);
+  background: var(--surface-1); color: var(--fg); transition: all var(--dur) var(--ease); max-width: 240px;
+}
+.suggest:hover { background: var(--surface-2); border-color: var(--line-strong); transform: translateY(-2px); }
+.suggest .si { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-tint); color: var(--accent); display: grid; place-items: center; flex: 0 0 auto; }
+.suggest .sl { font-size: 13.5px; font-weight: 600; line-height: 1.25; }
+.suggest .ss { font-size: 11.5px; color: var(--fg-3); margin-top: 2px; }
+
+.secondary-prompts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+.sp { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: var(--r-pill); border: 1px solid var(--line); background: transparent; color: var(--fg-2); font-size: 12.5px; transition: all var(--dur) var(--ease); }
+.sp:hover { color: var(--fg); border-color: var(--line-2); background: var(--surface-hover); }
+
+/* ---------- messages ---------- */
+.msg { display: flex; gap: 14px; align-items: flex-start; }
+.msg.user { justify-content: flex-end; }
+.msg-avatar { width: 30px; height: 30px; border-radius: 9px; flex: 0 0 auto; display: grid; place-items: center; background: var(--tile-bg); border: 1px solid var(--line-2); margin-top: 2px; }
+.msg-content { min-width: 0; max-width: 100%; }
+.msg.bonsai .msg-content { max-width: calc(100% - 44px); }
+.bubble-user {
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--fg);
+  padding: 11px 16px; border-radius: 18px 18px 6px 18px; font-size: 14.5px; max-width: 520px; line-height: 1.5;
+}
+.msg-text { font-size: 15px; line-height: 1.62; color: var(--fg); }
+.msg-text p + p { margin-top: 12px; }
+.msg-text b { color: var(--fg); font-weight: 700; }
+.msg-name { font-size: 12px; font-weight: 700; color: var(--fg); margin-bottom: 5px; display: flex; align-items: center; gap: 7px; font-family: var(--font-display); }
+.msg-name .t { font-weight: 400; color: var(--fg-muted); font-size: 11px; font-family: var(--font-ui); white-space: nowrap; }
+
+/* typing */
+.typing { display: inline-flex; gap: 5px; padding: 6px 0; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--fg-3); animation: blink 1.2s infinite ease-in-out; }
+.typing i:nth-child(2){ animation-delay: .18s; } .typing i:nth-child(3){ animation-delay: .36s; }
+@keyframes blink { 0%,80%,100%{ opacity:.25; transform: translateY(0);} 40%{ opacity:1; transform: translateY(-3px);} }
+
+/* ---------- widgets ---------- */
+.w { margin-top: 14px; border: 1px solid var(--line-2); border-radius: var(--r-md); background: var(--surface-1); overflow: hidden; }
+.w-head { display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+.w-head .wt { font-size: 13px; font-weight: 700; font-family: var(--font-display); letter-spacing: -0.01em; }
+.w-head .wk { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); font-weight: 600; }
+.w-ico { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent); flex: 0 0 auto; }
+
+/* lesson list */
+.lesson-row { display: flex; align-items: center; gap: 13px; padding: 13px 15px; border-bottom: 1px solid var(--line); transition: background var(--dur) var(--ease); }
+.lesson-row:last-child { border-bottom: none; }
+.lesson-row:hover { background: var(--surface-hover); }
+.lesson-num { width: 24px; height: 24px; border-radius: 7px; background: var(--surface-3); color: var(--fg-2); font-size: 12px; font-weight: 700; display: grid; place-items: center; flex: 0 0 auto; font-family: var(--font-display); }
+.lesson-main { flex: 1; min-width: 0; }
+.lesson-t { font-size: 14px; font-weight: 600; color: var(--fg); }
+.lesson-meta { font-size: 11.5px; color: var(--fg-3); margin-top: 3px; display: flex; gap: 8px; align-items: center; }
+.dot-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--fg-muted); }
+
+/* flashcard */
+.flash { padding: 4px; }
+.flash-card { position: relative; min-height: 150px; border-radius: var(--r-sm); background: var(--surface-2); border: 1px solid var(--line); padding: 22px; cursor: pointer; display: flex; flex-direction: column; justify-content: center; transition: border-color var(--dur) var(--ease); }
+.flash-card:hover { border-color: var(--line-strong); }
+.flash-tag { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+.flash-q { font-size: 17px; font-weight: 600; font-family: var(--font-display); letter-spacing: -0.01em; line-height: 1.35; }
+.flash-a { font-size: 14.5px; color: var(--fg-2); line-height: 1.55; }
+.flash-hint { font-size: 11.5px; color: var(--fg-muted); margin-top: 14px; display: flex; align-items: center; gap: 6px; }
+.flash-foot { display: flex; align-items: center; justify-content: space-between; padding: 10px 6px 4px; }
+.flash-dots { display: flex; gap: 6px; } .flash-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line-strong); } .flash-dots i.on { background: var(--accent); }
+
+/* quiz */
+.quiz { padding: 16px; }
+.quiz-prog { font-size: 11.5px; color: var(--fg-3); font-weight: 600; letter-spacing: .04em; margin-bottom: 10px; }
+.quiz-q { font-size: 16px; font-weight: 600; font-family: var(--font-display); letter-spacing: -0.01em; line-height: 1.4; margin-bottom: 14px; }
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+.quiz-opt { display: flex; align-items: center; gap: 11px; padding: 12px 14px; border: 1px solid var(--line-2); border-radius: var(--r-sm); background: var(--surface-2); color: var(--fg); font-size: 14px; text-align: left; transition: all var(--dur) var(--ease); }
+.quiz-opt:hover:not(:disabled) { border-color: var(--line-strong); background: var(--surface-3); }
+.quiz-opt .qk { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line-strong); display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: 0 0 auto; color: var(--fg-2); }
+.quiz-opt.correct { border-color: color-mix(in srgb, var(--success) 55%, transparent); background: color-mix(in srgb, var(--success) 12%, transparent); }
+.quiz-opt.correct .qk { background: var(--success); border-color: var(--success); color: #04130c; }
+.quiz-opt.wrong { border-color: color-mix(in srgb, var(--danger) 55%, transparent); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+.quiz-opt.wrong .qk { background: var(--danger); border-color: var(--danger); color: #1a0603; }
+.quiz-explain { margin-top: 12px; padding: 12px 14px; border-radius: var(--r-sm); background: var(--surface-3); font-size: 13px; color: var(--fg-2); line-height: 1.5; border-left: 2px solid var(--accent); }
+.quiz-explain b { color: var(--fg); }
+.quiz-done { text-align: center; padding: 8px 0 4px; }
+.quiz-score { font-family: var(--font-display); font-size: 40px; font-weight: 600; letter-spacing: -0.02em; }
+
+/* audio */
+.audio { display: flex; align-items: center; gap: 14px; padding: 14px 16px; }
+.audio-play { width: 42px; height: 42px; border-radius: 50%; flex: 0 0 auto; background: var(--accent); color: var(--fg-on-accent); display: grid; place-items: center; transition: background var(--dur) var(--ease); }
+.audio-play:hover { background: var(--accent-600); }
+.audio-main { flex: 1; min-width: 0; }
+.audio-wave { display: flex; align-items: center; gap: 2.5px; height: 30px; }
+.audio-wave i { flex: 1; border-radius: 2px; background: var(--line-strong); min-width: 2px; transition: background var(--dur) var(--ease); }
+.audio-wave i.on { background: var(--accent); }
+.audio-time { font-size: 11px; color: var(--fg-3); margin-top: 5px; font-variant-numeric: tabular-nums; display: flex; justify-content: space-between; }
+
+/* pdf chip */
+.pdf-chip { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.pdf-ico { width: 38px; height: 46px; border-radius: 7px; background: var(--surface-3); border: 1px solid var(--line-2); display: grid; place-items: center; color: var(--accent); flex: 0 0 auto; }
+.pdf-info { flex: 1; min-width: 0; } .pdf-name { font-size: 13.5px; font-weight: 600; } .pdf-meta { font-size: 11.5px; color: var(--fg-3); margin-top: 2px; }
+.cite { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 11px; color: var(--accent); background: var(--accent-tint); padding: 3px 9px; border-radius: var(--r-pill); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent); }
+
+/* recap list (reexplain) */
+.recap { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 9px; }
+.recap li { display: flex; gap: 11px; align-items: flex-start; font-size: 14px; color: var(--fg-2); line-height: 1.5; }
+.recap li .n { width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto; background: var(--accent-tint); color: var(--accent); display: grid; place-items: center; font-size: 11px; font-weight: 700; font-family: var(--font-display); margin-top: 1px; }
+.metaphor { padding: 14px 16px; border-radius: var(--r-sm); background: var(--tan-tint); border-left: 2px solid var(--tan); font-size: 14.5px; line-height: 1.55; color: var(--fg); font-style: italic; }
+
+/* widget action footer */
+.w-foot { display: flex; gap: 8px; padding: 12px 15px; border-top: 1px solid var(--line); }
+
+/* ---------- variant: rail (context sub-rail) ---------- */
+.chat-subrail { width: 252px; flex: 0 0 252px; border-right: 1px solid var(--line); background: var(--surface-1); display: flex; flex-direction: column; padding: 16px 12px; gap: 18px; overflow-y: auto; }
+.subrail-sec .sh { display: flex; align-items: center; justify-content: space-between; padding: 0 8px 8px; }
+.subrail-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; color: var(--fg-2); font-size: 13px; transition: all var(--dur) var(--ease); cursor: pointer; }
+.subrail-item:hover { background: var(--surface-hover); color: var(--fg); }
+.subrail-item.active { background: var(--accent-tint-2); color: var(--fg); }
+.subrail-route { padding: 10px; border-radius: var(--r-sm); border: 1px solid var(--line); margin-bottom: 8px; }
+.subrail-route .rt { font-size: 12.5px; font-weight: 600; margin-bottom: 8px; }
+
+/* ---------- variant: brief (daily briefing hero) ---------- */
+.brief { max-width: 760px; margin: 0 auto; width: 100%; padding: 26px 24px 6px; }
+.brief-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 14px; }
+.brief-card { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface-1); padding: 18px; }
+.brief-focus { display: flex; flex-direction: column; gap: 14px; }
+.ring-wrap { display: flex; align-items: center; gap: 16px; }
+.ring { width: 64px; height: 64px; flex: 0 0 auto; }
+.brief-stat { display: flex; gap: 22px; }
+.brief-stat .v { font-family: var(--font-display); font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+.brief-stat .l { font-size: 11px; color: var(--fg-3); margin-top: 1px; }
+
+@media (max-width: 860px) {
+  .chat-subrail { display: none; }
+  .brief-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .chat { padding-bottom: 60px; }
+  .thread-col, .composer-inner, .hero, .brief { padding-left: 16px; padding-right: 16px; }
+  .suggest { max-width: 100%; flex: 1 1 100%; }
+}
+
+/* ---------- variant: graph (temporal force-directed onboarding map) ---------- */
+.graph-stage { position: relative; height: 100%; width: 100%; overflow: hidden; }
+.graph-head {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 18px 22px; pointer-events: none; gap: 16px; flex-wrap: wrap;
+}
+.graph-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: -0.02em; color: var(--fg); margin-top: 4px; }
+.graph-legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.graph-legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg-3); }
+.graph-legend .lg { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.graph-legend .lg.done { background: var(--accent); }
+.graph-legend .lg.current { background: var(--tan); }
+.graph-legend .lg.pending { background: var(--surface-3); border: 1.5px solid var(--line-strong); }
+.graph-legend .lg.locked { background: transparent; border: 1.5px dashed var(--line-strong); }
+
+.graph-svg { width: 100%; height: 100%; display: block; }
+.glink { stroke: var(--line-2); }
+
+.gnode .dot { stroke-width: 1.6px; transition: filter var(--dur) var(--ease); }
+.gnode { -webkit-tap-highlight-color: transparent; }
+.gnode .lbl {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600; fill: var(--fg-2);
+  paint-order: stroke; pointer-events: none; letter-spacing: -0.01em;
+}
+.gnode.lvl-root .lbl { font-family: var(--font-display); font-size: 14px; fill: var(--fg); }
+.gnode.lvl-area .lbl { font-size: 12.5px; fill: var(--fg); }
+.gnode.lvl-lesson .lbl { opacity: 0; transition: opacity var(--dur) var(--ease); }
+.gnode.lvl-lesson.n-current .lbl { opacity: 1; fill: var(--fg); }
+.gnode:hover .lbl { opacity: 1; fill: var(--fg); }
+.gnode:not(.lvl-root):not(.n-locked) { cursor: pointer; }
+.gnode.n-locked { cursor: not-allowed; }
+
+/* node fills by status */
+.gnode .halo { fill: none; stroke: none; }
+.gnode.lvl-root .dot { fill: color-mix(in srgb, var(--accent) 32%, var(--bg)); stroke: var(--accent); stroke-width: 2.4px; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 45%, transparent)); }
+.gnode.n-done .dot { fill: var(--accent); stroke: none; }
+.gnode.n-current .dot { fill: var(--tan); stroke: none; }
+.gnode.lvl-root.n-current .dot { fill: color-mix(in srgb, var(--accent) 32%, var(--bg)); }
+.gnode.n-pending .dot { fill: color-mix(in srgb, var(--accent) 26%, var(--surface-2)); stroke: color-mix(in srgb, var(--accent) 55%, transparent); stroke-width: 1.6px; }
+.gnode.n-locked .dot { fill: none; stroke: var(--line-strong); stroke-dasharray: 3 3; opacity: .55; }
+.gnode:hover .dot { filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent) 60%, transparent)); }
+
+/* pulse on in-progress nodes */
+.gnode.n-current:not(.lvl-root) .halo { stroke: var(--tan); stroke-width: 1.6px; animation: halo 2.1s var(--ease) infinite; }
+@keyframes halo { 0% { stroke-opacity: .55; transform: scale(.8); } 70% { stroke-opacity: 0; transform: scale(1.5); } 100% { stroke-opacity: 0; transform: scale(1.5); } }
+@media (prefers-reduced-motion: reduce) { .gnode.n-current .halo { animation: none; } }
+
+.graph-tip {
+  position: absolute; transform: translate(-50%, -100%); pointer-events: none; z-index: 5;
+  background: var(--surface-3); border: 1px solid var(--line-2); border-radius: var(--r-sm);
+  padding: 8px 12px; max-width: 220px; box-shadow: var(--shadow-pop);
+  opacity: 0; transition: opacity var(--dur) var(--ease); display: flex; flex-direction: column; gap: 2px;
+}
+.graph-tip.on { opacity: 1; }
+.graph-tip b { font-size: 13px; font-weight: 700; color: var(--fg); font-family: var(--font-display); letter-spacing: -0.01em; }
+.graph-tip i { font-size: 11.5px; color: var(--fg-3); font-style: normal; line-height: 1.4; }
+
+/* Step-completed pill — inline marker in a Bonsai message when the chat
+   closed a route step (event:done payload.stepCompleted). */
+.step-completed-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  background: color-mix(in srgb, var(--success, #45D17B) 14%, transparent);
+  color: var(--success, #45D17B);
+  border: 1px solid color-mix(in srgb, var(--success, #45D17B) 40%, transparent);
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Tool-trace chips — shown inside an assistant message while Bonsai is
+   invoking backend tools (ragQuery, present-resource, etc.). When the
+   tool finishes (.is-done) the dots disappear and the chip dims. */
+.tool-trace {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin: 4px 0 10px;
+}
+.tool-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px; font-weight: 500;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--fg-2, var(--fg));
+  transition: opacity 0.25s ease, background 0.25s ease;
+}
+.tool-chip.is-running {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.tool-chip.is-done {
+  opacity: 0.65;
+}
+.tool-chip .tool-emoji { font-size: 12px; line-height: 1; }
+.tool-chip .tool-label { white-space: nowrap; }
+.tool-chip .tool-dots {
+  display: inline-flex; gap: 2px; margin-left: 2px;
+}
+.tool-chip .tool-dots i {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: currentColor; opacity: 0.55;
+  animation: tool-dot 1.2s ease-in-out infinite;
+}
+.tool-chip .tool-dots i:nth-child(2) { animation-delay: 0.18s; }
+.tool-chip .tool-dots i:nth-child(3) { animation-delay: 0.36s; }
+@keyframes tool-dot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 0.95; transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tool-chip .tool-dots i { animation: none; opacity: 0.6; }
+}
+
+/* Resource cards — rendered inline below a Bonsai reply when the
+   present-resource or recommend-resources tools surfaced a resource.
+   Each card has an icon (by type), title, meta line, and "Abrir" button
+   that opens the source URL and POSTs /resources/:id/open. */
+.resource-cards {
+  display: flex; flex-direction: column; gap: 8px;
+  margin: 12px 0 4px;
+}
+.resource-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface-2, transparent));
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line, transparent));
+  border-radius: var(--r-md, 10px);
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+.resource-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.resource-card-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; flex-shrink: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+}
+.resource-card-body {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.resource-card-title {
+  font-size: 13.5px; font-weight: 600; color: var(--fg);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.resource-card-meta {
+  display: flex; gap: 6px; align-items: center;
+  font-size: 11.5px; color: var(--fg-3, var(--fg));
+  flex-wrap: wrap;
+}
+.resource-card-type {
+  text-transform: uppercase; font-weight: 600; letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--accent) 70%, var(--fg-3));
+}
+.resource-card-sep {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--fg-3, currentColor); opacity: 0.5;
+}
+.resource-card-desc {
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.resource-card-open {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  background: var(--accent);
+  color: white;
+  border: none; border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.resource-card-open:hover { opacity: 0.88; }
+.resource-card-open:active { transform: translateY(1px); }
+
+/* Conversations panel — part of the app's left menu (rendered next to the
+   nav rail in app.jsx), ChatGPT / Claude style. Lists the learner's recent
+   conversations and stretches the full app height. */
+.threads-panel {
+  width: 264px;
+  border-right: 1px solid var(--line);
+  background: var(--surface-1);
+  display: flex; flex-direction: column; min-height: 0;
+  z-index: 20;
+}
+.threads-panel-head {
+  height: 60px; flex: 0 0 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 10px 0 16px; border-bottom: 1px solid var(--line);
+}
+.threads-panel-title {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; font-weight: 600; color: var(--fg-2);
+}
+.threads-panel-collapse, .threads-panel-toggle {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid transparent; background: transparent; color: var(--fg-3);
+  display: grid; place-items: center; cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.threads-panel-collapse:hover, .threads-panel-toggle:hover {
+  color: var(--fg); background: var(--surface-hover);
+}
+.threads-panel-new {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 12px; padding: 9px 12px;
+  border: 1px solid var(--line-2); border-radius: 10px;
+  background: transparent; color: var(--fg);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.threads-panel-new:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.threads-panel-list {
+  flex: 1; min-height: 0; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 0 8px 12px;
+}
+.threads-panel.is-collapsed {
+  width: 52px; flex: 0 0 52px;
+  align-items: center; gap: 8px; padding-top: 14px;
+}
+
+.threads-empty {
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 12.5px; color: var(--fg-3, var(--fg));
+}
+.threads-empty.threads-err { color: var(--danger, #E54B5C); }
+.threads-item {
+  display: flex; flex-direction: column; gap: 2px;
+  width: 100%; text-align: left;
+  padding: 9px 10px;
+  background: transparent; color: var(--fg);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit; cursor: pointer;
+}
+.threads-item:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.threads-item.is-active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.threads-item-title {
+  font-size: 13px; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.threads-item-meta {
+  font-size: 11px; color: var(--fg-3, var(--fg));
+}
+
+/* Resume banner — shown when the learner picks an old thread and the
+   in-memory chat is cleared. */
+.resume-banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  margin: 0 0 12px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: var(--r-sm, 8px);
+  font-size: 12.5px; color: var(--fg-2, var(--fg));
+}
+.resume-banner b { color: var(--fg); }
+.resume-banner-close {
+  margin-left: auto; padding: 0 6px;
+  background: transparent; border: none;
+  color: var(--fg-3, var(--fg));
+  cursor: pointer; font-size: 16px; line-height: 1;
+}
+.resume-banner-close:hover { color: var(--fg); }
+
+/* The header right cluster is now position:relative so the dropdown
+   anchors against it. */
+.chat-top-right { position: relative; }
+.icon-btn.is-active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+}
+
+/* Markdown-rendered Bonsai replies. marked.js outputs raw HTML; we style
+   the elements inline within an .rich-text wrapper so the chat bubble
+   doesn't visually compete with the page chrome. */
+.rich-text > * { margin: 0; }
+.rich-text > * + * { margin-top: 10px; }
+.rich-text p { font-size: 13.5px; line-height: 1.55; color: var(--fg); }
+.rich-text strong { font-weight: 700; color: var(--fg); }
+.rich-text em { font-style: italic; }
+.rich-text h1, .rich-text h2, .rich-text h3 {
+  font-family: var(--font-display, var(--font-ui));
+  font-weight: 700; line-height: 1.25;
+  color: var(--fg);
+}
+.rich-text h1 { font-size: 18px; }
+.rich-text h2 { font-size: 16px; }
+.rich-text h3 { font-size: 14.5px; }
+.rich-text ul, .rich-text ol { padding-left: 20px; }
+.rich-text li { margin: 2px 0; font-size: 13.5px; line-height: 1.5; }
+.rich-text a {
+  color: var(--accent);
+  text-decoration: underline; text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+.rich-text a:hover { text-decoration-color: var(--accent); }
+.rich-text code {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 1px 6px; border-radius: 4px;
+  color: var(--fg);
+}
+.rich-text pre {
+  background: #0F1117;
+  border: 1px solid var(--line, var(--border));
+  border-radius: var(--r-sm, 8px);
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-size: 12px; line-height: 1.5;
+}
+.rich-text pre code {
+  background: transparent; padding: 0; border-radius: 0;
+  color: var(--fg-2, var(--fg));
+}
+.rich-text blockquote {
+  border-left: 3px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  padding: 2px 0 2px 12px;
+  color: var(--fg-2, var(--fg));
+  font-style: italic;
+}
+.rich-text table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12.5px;
+}
+.rich-text th, .rich-text td {
+  border: 1px solid var(--line, var(--border));
+  padding: 6px 10px;
+  text-align: left;
+}
+.rich-text th {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  font-weight: 600;
+}
+.rich-text hr {
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  margin: 14px 0;
+}

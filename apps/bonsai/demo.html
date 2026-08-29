@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bonsai — demo backend</title>
+<style>
+  :root {
+    --bg: #14161C;
+    --panel: #1B1E26;
+    --border: #2A2E3A;
+    --text: #E8E9EE;
+    --muted: #8B91A2;
+    --accent: #2F6CFF;
+    --danger: #E54B5C;
+    --ok: #45D17B;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+  header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header .who { color: var(--muted); margin-left: auto; font-size: 13px; }
+  header button { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; cursor: pointer; }
+  header button:hover { color: var(--text); }
+  main { padding: 20px; max-width: 980px; width: 100%; margin: 0 auto; display: grid; gap: 20px; grid-template-columns: 1fr 1fr; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    min-width: 0;
+  }
+  .panel h2 { margin: 0 0 12px; font-size: 15px; font-weight: 600; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  input, textarea, select {
+    background: #0F1117;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font: inherit;
+    width: 100%;
+  }
+  textarea { resize: vertical; min-height: 60px; }
+  button.primary {
+    background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600;
+  }
+  button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .step { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+  .step .badge { font-size: 11px; padding: 2px 7px; border-radius: 999px; background: #0F1117; color: var(--muted); border: 1px solid var(--border); }
+  .step .badge.done { background: rgba(69, 209, 123, 0.15); color: var(--ok); border-color: rgba(69, 209, 123, 0.4); }
+  .step .badge.current { background: rgba(47, 108, 255, 0.15); color: var(--accent); border-color: rgba(47, 108, 255, 0.4); }
+  .step .title { flex: 1; min-width: 0; }
+  .err { color: var(--danger); font-size: 13px; margin-top: 8px; }
+  .ok { color: var(--ok); font-size: 13px; margin-top: 8px; }
+  .muted { color: var(--muted); font-size: 12px; }
+  .chat-log {
+    max-height: 360px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #0F1117;
+    min-height: 200px;
+  }
+  .msg { margin-bottom: 12px; }
+  .msg .role { font-size: 11px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .msg.user .role { color: var(--accent); }
+  .msg .body { white-space: pre-wrap; }
+  .msg .body a { color: var(--accent); }
+  .login-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: grid; place-items: center; z-index: 50;
+  }
+  .login-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: 360px; }
+  .login-card h1 { margin: 0 0 12px; font-size: 18px; }
+  .login-card .helper { color: var(--muted); font-size: 12px; margin: 10px 0 4px; }
+  .login-card .seeded { display: flex; gap: 8px; margin: 8px 0; }
+  .login-card .seeded button { flex: 1; background: #0F1117; color: var(--text); border: 1px solid var(--border); padding: 6px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+  .login-card .seeded button:hover { border-color: var(--accent); }
+  pre.json { font-size: 11px; max-height: 220px; overflow: auto; background: #0F1117; padding: 8px; border-radius: 6px; border: 1px solid var(--border); }
+  .pill { display: inline-block; padding: 1px 6px; font-size: 10px; border-radius: 4px; background: #0F1117; border: 1px solid var(--border); color: var(--muted); margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <strong>Bonsai demo</strong>
+  <span class="muted">→</span>
+  <span id="apiBase" class="muted"></span>
+  <span class="who" id="who"></span>
+  <button id="logout" style="display:none">Logout</button>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Ruta + progreso</h2>
+    <div id="routeBox">cargando…</div>
+    <details style="margin-top: 10px;">
+      <summary class="muted" style="cursor: pointer;">progreso JSON</summary>
+      <pre id="progressJson" class="json"></pre>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>Chat con Bonsai</h2>
+    <div id="chatLog" class="chat-log"></div>
+    <div class="row">
+      <textarea id="chatInput" placeholder="Pregunta algo a Bonsai…"></textarea>
+    </div>
+    <div class="row" style="justify-content: flex-end; margin-top: 8px;">
+      <span class="muted" id="chatStatus"></span>
+      <button id="sendBtn" class="primary">Enviar</button>
+    </div>
+  </section>
+</main>
+
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-card">
+    <h1>Login (dev)</h1>
+    <input id="emailInput" placeholder="email" value="learner@acme.us" />
+    <div class="seeded">
+      <button data-email="learner@acme.us">learner@acme.us</button>
+      <button data-email="manager@acme.us">manager@acme.us</button>
+    </div>
+    <div style="margin-top: 12px;">
+      <button id="loginBtn" class="primary" style="width: 100%;">Entrar</button>
+    </div>
+    <div class="helper">
+      API: <code id="apiCfg"></code><br>
+      <span class="muted">Cambia con <code>?api=https://tu.deploy</code> o <code>localStorage.setItem('bonsai.api', '…')</code></span>
+    </div>
+    <div id="loginErr" class="err"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_TOKEN = 'bonsai.token';
+const STORAGE_USER = 'bonsai.user';
+const STORAGE_THREAD = 'bonsai.thread';
+const STORAGE_API = 'bonsai.api';
+
+function apiBase() {
+  const url = new URL(location.href);
+  return url.searchParams.get('api') || localStorage.getItem(STORAGE_API) || 'http://localhost:4111';
+}
+
+function token() { return localStorage.getItem(STORAGE_TOKEN); }
+function setSession(t, u) {
+  localStorage.setItem(STORAGE_TOKEN, t);
+  localStorage.setItem(STORAGE_USER, JSON.stringify(u));
+}
+function clearSession() {
+  localStorage.removeItem(STORAGE_TOKEN);
+  localStorage.removeItem(STORAGE_USER);
+  localStorage.removeItem(STORAGE_THREAD);
+}
+function currentUser() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_USER) || 'null'); } catch { return null; }
+}
+
+async function api(path, opts = {}) {
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  const t = token();
+  if (t) headers.Authorization = 'Bearer ' + t;
+  const res = await fetch(apiBase() + path, Object.assign({}, opts, { headers }));
+  const text = await res.text();
+  let body = null;
+  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+  if (!res.ok) {
+    const msg = body && body.error ? `${body.error.code}: ${body.error.message}` : `HTTP ${res.status}`;
+    throw new Error(msg);
+  }
+  return body;
+}
+
+// SSE consumer over POST. EventSource only supports GET, so we parse the
+// stream manually. Calls onDelta(string) per text delta and onDone(payload)
+// at the end. Tolerates partial chunks across reads.
+async function chatStream(message, threadId, { onDelta, onDone, onError, signal }) {
+  const headers = { 'Content-Type': 'application/json' };
+  const t = token();
+  if (t) headers.Authorization = 'Bearer ' + t;
+  let res;
+  try {
+    res = await fetch(apiBase() + '/chat', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ message, threadId }),
+      signal,
+    });
+  } catch (e) {
+    onError && onError(e);
+    return;
+  }
+  if (!res.ok || !res.body) {
+    let detail = '';
+    try { detail = await res.text(); } catch { /* ignore */ }
+    onError && onError(new Error(`HTTP ${res.status}${detail ? ': ' + detail : ''}`));
+    return;
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let currentEvent = 'message';
+
+  function flushFrame(frame) {
+    if (!frame.trim()) return;
+    let event = 'message';
+    let data = '';
+    for (const line of frame.split('\n')) {
+      if (line.startsWith('event:')) event = line.slice(6).trim();
+      else if (line.startsWith('data:')) data += (data ? '\n' : '') + line.slice(5).trim();
+    }
+    if (!data) return;
+    let parsed;
+    try { parsed = JSON.parse(data); } catch { parsed = { type: 'text', delta: data }; }
+    if (event === 'done' || parsed.type === 'done') {
+      onDone && onDone(parsed);
+    } else if (parsed.type === 'text' && parsed.delta) {
+      onDelta && onDelta(parsed.delta);
+    } else if (parsed.type === 'error') {
+      onError && onError(new Error(parsed.message || 'stream error'));
+    }
+  }
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      if (buffer.trim()) flushFrame(buffer);
+      break;
+    }
+    buffer += decoder.decode(value, { stream: true });
+    // SSE frames are separated by a blank line (\n\n).
+    let idx;
+    while ((idx = buffer.indexOf('\n\n')) >= 0) {
+      const frame = buffer.slice(0, idx);
+      buffer = buffer.slice(idx + 2);
+      flushFrame(frame);
+    }
+  }
+}
+
+// --- UI wiring --------------------------------------------------------------
+
+const $ = (s) => document.querySelector(s);
+
+function showLoginOverlay() {
+  $('#loginOverlay').style.display = 'grid';
+  $('#apiCfg').textContent = apiBase();
+}
+function hideLoginOverlay() { $('#loginOverlay').style.display = 'none'; }
+
+function renderHeader() {
+  $('#apiBase').textContent = apiBase();
+  const u = currentUser();
+  if (u) {
+    $('#who').textContent = `${u.name} · ${u.role} · ${u.organizationId}`;
+    $('#logout').style.display = '';
+  } else {
+    $('#who').textContent = '';
+    $('#logout').style.display = 'none';
+  }
+}
+
+async function doLogin(email) {
+  $('#loginErr').textContent = '';
+  try {
+    const res = await api('/dev/login', { method: 'POST', body: JSON.stringify({ email }) });
+    setSession(res.token, res.user);
+    hideLoginOverlay();
+    renderHeader();
+    await refreshRoute();
+  } catch (e) {
+    $('#loginErr').textContent = e.message;
+  }
+}
+
+async function refreshRoute() {
+  const user = currentUser();
+  const box = $('#routeBox');
+  if (!user) { box.textContent = ''; return; }
+  if (user.role !== 'learner') {
+    box.innerHTML = `<div class="muted">El rol <code>${user.role}</code> no consume <code>/route</code>. Entra como learner para ver la ruta.</div>`;
+    $('#progressJson').textContent = '';
+    return;
+  }
+  box.textContent = 'cargando…';
+  try {
+    const [routeRes, progRes] = await Promise.all([api('/route'), api('/progress')]);
+    const completed = new Set((progRes.progress || []).filter(p => p.status === 'completed').map(p => p.stepId));
+    const ordered = [...routeRes.route.steps].sort((a, b) => a.order - b.order);
+    const currentId = ordered.find(s => !completed.has(s.id))?.id;
+    box.innerHTML = '<div style="margin-bottom: 10px;"><strong>' + routeRes.route.title + '</strong></div>' +
+      ordered.map(s => {
+        const status = completed.has(s.id) ? 'done' : (s.id === currentId ? 'current' : 'pending');
+        const label = status === 'done' ? '✓ completado' : status === 'current' ? '→ actual' : 'pendiente';
+        return `<div class="step">
+          <span class="badge ${status}">${label}</span>
+          <span class="title">${s.order}. ${s.title}</span>
+          <span class="pill">${s.completion.type}</span>
+        </div>`;
+      }).join('');
+    $('#progressJson').textContent = JSON.stringify(progRes.progress, null, 2);
+  } catch (e) {
+    if (e.message.includes('NOT_FOUND')) {
+      box.innerHTML = '<div class="muted">No hay ruta sembrada para esta organización. Corre <code>bun run scripts/seed-bonsai.ts</code>.</div>';
+    } else {
+      box.innerHTML = `<div class="err">${e.message}</div>`;
+    }
+  }
+}
+
+function appendMessage(role, text) {
+  const log = $('#chatLog');
+  const msg = document.createElement('div');
+  msg.className = 'msg ' + role;
+  msg.innerHTML = `<div class="role">${role === 'user' ? 'tú' : 'bonsai'}</div><div class="body"></div>`;
+  msg.querySelector('.body').textContent = text;
+  log.appendChild(msg);
+  log.scrollTop = log.scrollHeight;
+  return msg.querySelector('.body');
+}
+
+async function sendChat() {
+  const user = currentUser();
+  if (!user || user.role !== 'learner') {
+    $('#chatStatus').textContent = 'Solo el rol learner puede chatear.';
+    return;
+  }
+  const input = $('#chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  $('#sendBtn').disabled = true;
+  $('#chatStatus').textContent = 'pensando…';
+
+  appendMessage('user', text);
+  const target = appendMessage('bonsai', '');
+  let acc = '';
+
+  const threadId = localStorage.getItem(STORAGE_THREAD) || undefined;
+
+  try {
+    await chatStream(text, threadId, {
+      onDelta: (delta) => {
+        acc += delta;
+        target.textContent = acc;
+        $('#chatLog').scrollTop = $('#chatLog').scrollHeight;
+      },
+      onDone: (payload) => {
+        if (payload && payload.threadId) {
+          localStorage.setItem(STORAGE_THREAD, payload.threadId);
+        }
+        if (payload && payload.stepCompleted) {
+          $('#chatStatus').textContent = `paso completado: ${payload.stepCompleted}`;
+          refreshRoute();
+        } else {
+          $('#chatStatus').textContent = '';
+        }
+      },
+      onError: (err) => {
+        target.textContent = '[error] ' + err.message;
+        $('#chatStatus').textContent = '';
+      },
+    });
+  } finally {
+    $('#sendBtn').disabled = false;
+  }
+}
+
+// --- Boot -------------------------------------------------------------------
+
+renderHeader();
+if (!token()) {
+  showLoginOverlay();
+} else {
+  refreshRoute();
+}
+
+$('#loginBtn').addEventListener('click', () => doLogin($('#emailInput').value.trim()));
+$('#emailInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#loginBtn').click(); });
+document.querySelectorAll('.seeded button').forEach(b => {
+  b.addEventListener('click', () => {
+    $('#emailInput').value = b.dataset.email;
+    $('#loginBtn').click();
+  });
+});
+$('#logout').addEventListener('click', () => { clearSession(); renderHeader(); showLoginOverlay(); });
+$('#sendBtn').addEventListener('click', sendChat);
+$('#chatInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); sendChat(); }
+});
+</script>
+</body>
+</html>

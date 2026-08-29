@@ -1,0 +1,25 @@
+{
+  "name": "@bonsai/e2e",
+  "version": "0.0.1",
+  "description": "End-to-end tests for the bonsai prototype (Playwright). Drives the apps/bonsai React UI against the live apps/mastra backend.",
+  "private": true,
+  "scripts": {
+    "install:browsers": "playwright install chromium",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
+    "@playwright/test": "1.59.1",
+    "@types/node": "^22.10.7",
+    "@types/pg": "^8.15.5",
+    "dotenv": "^17.4.2",
+    "pdf-lib": "^1.17.1",
+    "pg": "^8.16.3",
+    "playwright": "1.59.1",
+    "typescript": "^5.9.3"
+  }
+}

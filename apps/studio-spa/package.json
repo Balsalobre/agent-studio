@@ -1,0 +1,19 @@
+{
+  "name": "studio-spa",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "mastra": "^1.10.2",
+    "vite": "^8.0.16"
+  }
+}

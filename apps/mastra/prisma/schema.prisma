@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // URL is provided externally: prisma.config.ts for CLI/migrations,
+  // PrismaPg adapter for runtime (see src/mastra/domain/prisma.ts).
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  config    Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  users     User[]
+  resources Resource[]
+  progress  LearnerProgress[]
+
+  @@map("organizations")
+}
+
+enum Role {
+  manager
+  learner
+}
+
+model User {
+  id             String   @id @default(uuid())
+  organizationId String   @map("organization_id")
+  email          String
+  name           String?
+  role           Role
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  progress     LearnerProgress[]
+
+  @@unique([organizationId, email])
+  @@map("users")
+}
+
+enum ResourceType {
+  pdf
+  learning_experience
+  ebook
+  audio
+  video
+}
+
+enum ResourceStatus {
+  registered
+  indexing
+  indexed
+  mock
+  error
+}
+
+model Resource {
+  id             String         @id @default(uuid())
+  organizationId String         @map("organization_id")
+  type           ResourceType
+  title          String
+  status         ResourceStatus @default(registered)
+  source         Json           @default("{}")
+  metadata       Json           @default("{}")
+  extractedText  String?        @map("extracted_text")
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@map("resources")
+}
+
+enum ProgressStatus {
+  pending
+  in_progress
+  completed
+}
+
+model LearnerProgress {
+  id             String         @id @default(uuid())
+  organizationId String         @map("organization_id")
+  userId         String         @map("user_id")
+  routeId        String         @map("route_id")
+  stepId         String         @map("step_id")
+  status         ProgressStatus @default(pending)
+  evidence       Json           @default("{}")
+  completedAt    DateTime?      @map("completed_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, routeId, stepId])
+  @@index([organizationId, userId])
+  @@map("learner_progress")
+}

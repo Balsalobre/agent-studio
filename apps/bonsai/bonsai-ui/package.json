@@ -1,0 +1,19 @@
+{
+  "name": "@agent-studio/bonsai-ui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bonsai — React component library (CSS-variable themed, light/dark).",
+  "main": "components/index.ts",
+  "types": "components/index.ts",
+  "sideEffects": ["**/*.css"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "files": [
+    "components",
+    "styles",
+    "tokens.ts",
+    "README.md"
+  ]
+}

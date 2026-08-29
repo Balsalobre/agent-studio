@@ -1,0 +1,42 @@
+{
+  "name": "agent-studio",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^25.9.1",
+    "mastra": "^1.10.2",
+    "pdf-lib": "^1.17.1",
+    "prisma": "^7.8.0"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "mastra dev",
+    "build": "mastra build",
+    "postbuild": "node scripts/sync-front.mjs",
+    "start": "mastra start",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@ai-sdk/deepseek": "^2.0.35",
+    "@ai-sdk/openai": "^3.0.67",
+    "@hono/node-server": "^1.19.11",
+    "@mastra/auth": "^1.0.2",
+    "@mastra/core": "^1.37.1",
+    "@mastra/evals": "^1.2.3",
+    "@mastra/loggers": "^1.1.1",
+    "@mastra/memory": "^1.20.0",
+    "@mastra/observability": "^1.14.0",
+    "@mastra/pg": "1.11.0",
+    "@mastra/rag": "^2.2.1",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "ai": "^6.0.195",
+    "dotenv": "^17.4.2",
+    "jose": "^6.2.3",
+    "unpdf": "^1.6.2",
+    "zod": "^4"
+  }
+}

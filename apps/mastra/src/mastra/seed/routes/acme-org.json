@@ -1,0 +1,246 @@
+{
+  "id": "route-acme-default",
+  "organizationId": "acme-org",
+  "title": "Ruta de aprendizaje · Banca (Compliance, Herramientas y Cultura)",
+  "steps": [
+    {
+      "id": "step-comp-01",
+      "order": 1,
+      "title": "Nodo: Certificación Integral en Compliance y Ética Bancaria",
+      "objective": "Visión general del programa de cumplimiento normativo y ética bancaria.",
+      "resourceIds": [
+        "res-comp-01"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-comp-01-1",
+      "order": 2,
+      "title": "Subnodo: Prevención de Fraude y Delitos Financieros",
+      "objective": "Identificar y escalar señales de fraude y delitos financieros.",
+      "resourceIds": [
+        "res-comp-01-1"
+      ],
+      "completion": {
+        "type": "quiz",
+        "passScore": 0.7,
+        "questions": [
+          {
+            "q": "¿Qué es una 'bandera roja' (red flag) en la detección de fraude?",
+            "options": [
+              "Una transacción rutinaria ya aprobada por el sistema",
+              "Un patrón o señal atípica que sugiere una posible irregularidad",
+              "El informe anual de auditoría externa",
+              "Una promoción comercial dirigida a clientes nuevos"
+            ],
+            "answer": 1
+          },
+          {
+            "q": "Ante la sospecha de una operación fraudulenta, ¿cuál es el protocolo correcto?",
+            "options": [
+              "Ignorarla si el importe es bajo",
+              "Resolverla por cuenta propia sin avisar a nadie",
+              "Escalarla de inmediato al departamento de Auditoría y Riesgos",
+              "Comentarla de forma informal con un compañero"
+            ],
+            "answer": 2
+          },
+          {
+            "q": "¿Cuál de los siguientes es un ejemplo de fraude interno?",
+            "options": [
+              "Un correo de phishing dirigido a un cliente",
+              "La manipulación de documentos por parte de un empleado",
+              "El robo de una tarjeta física por un tercero",
+              "Un ataque de denegación de servicio a la web del banco"
+            ],
+            "answer": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "step-comp-01-2",
+      "order": 3,
+      "title": "Subnodo: Ley de Protección de Datos Personales y Secreto Bancario",
+      "objective": "Aplicar la protección de datos y el secreto bancario en tu día a día.",
+      "resourceIds": [
+        "res-comp-01-2"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-comp-01-3",
+      "order": 4,
+      "title": "Subnodo: Código de Conducta y Canal de Denuncias Anónimo",
+      "objective": "Conocer el código de conducta y el canal de denuncias anónimo.",
+      "resourceIds": [
+        "res-comp-01-3"
+      ],
+      "completion": {
+        "type": "evaluation",
+        "prompt": "Describe una situación de posible conflicto de interés en tu día a día (por ejemplo, un regalo de un cliente o un vínculo familiar en una decisión crediticia) y explica cómo actuarías según el Código de Conducta.",
+        "rubric": "Debe identificar correctamente el conflicto de interés, mencionar la obligación de declararlo o abstenerse de la decisión, y referir el uso del canal de denuncias o la comunicación a un superior / Compliance. Una respuesta válida demuestra comprensión de la transparencia y del no aprovechamiento del cargo."
+      }
+    },
+    {
+      "id": "step-tool-01",
+      "order": 5,
+      "title": "Nodo: Dominio del Ecosistema Digital y Herramientas Corporativas",
+      "objective": "Dominar el ecosistema digital y las herramientas corporativas del banco.",
+      "resourceIds": [
+        "res-tool-01"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-tool-01-1",
+      "order": 6,
+      "title": "Subnodo: Gestión Integral en el CRM Financiero (Salesforce)",
+      "objective": "Gestionar clientes y ventas en el CRM financiero (Salesforce).",
+      "resourceIds": [
+        "res-tool-01-1"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-tool-01-2",
+      "order": 7,
+      "title": "Subnodo: Uso del Asistente Virtual (RAG) para Documentación Interna",
+      "objective": "Usar el asistente virtual (RAG) para consultar documentación interna.",
+      "resourceIds": [
+        "res-tool-01-2"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-tool-01-3",
+      "order": 8,
+      "title": "Subnodo: Plataforma de Evaluación y Aprobación de Riesgos",
+      "objective": "Operar la plataforma de evaluación y aprobación de riesgos.",
+      "resourceIds": [
+        "res-tool-01-3"
+      ],
+      "completion": {
+        "type": "quiz",
+        "passScore": 0.7,
+        "questions": [
+          {
+            "q": "¿Qué mide principalmente el 'scoring' crediticio?",
+            "options": [
+              "La rentabilidad de una sucursal",
+              "La probabilidad de impago de un cliente",
+              "El número de empleados de la oficina",
+              "La cuota de mercado del banco"
+            ],
+            "answer": 1
+          },
+          {
+            "q": "Si una operación supera tu nivel de autonomía, ¿qué procede?",
+            "options": [
+              "Aprobarla igualmente para no perder al cliente",
+              "Rechazarla automáticamente sin análisis",
+              "Elevarla al flujo de aprobación jerárquica",
+              "Fraccionarla en varias para no superar el límite"
+            ],
+            "answer": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "step-cap-01",
+      "order": 9,
+      "title": "Nodo: Academia de Excelencia, Cultura y Habilidades del Futuro",
+      "objective": "Desarrollar habilidades transversales y cultura de mejora continua.",
+      "resourceIds": [
+        "res-cap-01"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-cap-01-1",
+      "order": 10,
+      "title": "Subnodo: Gestión de Proyectos Ágiles (Agile & Scrum) en Banca",
+      "objective": "Aplicar metodologías ágiles (Scrum, Kanban) en banca.",
+      "resourceIds": [
+        "res-cap-01-1"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-cap-01-2",
+      "order": 11,
+      "title": "Subnodo: Finanzas Básicas para Áreas de Soporte (No Financieros)",
+      "objective": "Entender las finanzas básicas del negocio bancario.",
+      "resourceIds": [
+        "res-cap-01-2"
+      ],
+      "completion": {
+        "type": "quiz",
+        "passScore": 0.7,
+        "questions": [
+          {
+            "q": "¿Qué es el margen de intermediación?",
+            "options": [
+              "La diferencia entre ingresos y gastos de personal",
+              "La diferencia entre los intereses cobrados y los pagados",
+              "El beneficio obtenido por comisiones de tarjetas",
+              "El capital social aportado por los accionistas"
+            ],
+            "answer": 1
+          },
+          {
+            "q": "El indicador de morosidad mide…",
+            "options": [
+              "La satisfacción media de los clientes",
+              "La proporción de créditos impagados sobre el total concedido",
+              "El número de oficinas abiertas en el año",
+              "La rentabilidad de los fondos de inversión"
+            ],
+            "answer": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "step-cap-01-3",
+      "order": 12,
+      "title": "Subnodo: Biblioteca Digital y Fomento de la Cultura Financiera",
+      "objective": "Aprovechar la biblioteca digital y fomentar la cultura financiera.",
+      "resourceIds": [
+        "res-cap-01-3"
+      ],
+      "completion": {
+        "type": "consume"
+      }
+    },
+    {
+      "id": "step-cap-01-4",
+      "order": 13,
+      "title": "Subnodo: Liderazgo Femenino e Inclusión en el Sector Financiero",
+      "objective": "Impulsar el liderazgo femenino y la inclusión en el sector financiero.",
+      "resourceIds": [
+        "res-cap-01-4"
+      ],
+      "completion": {
+        "type": "evaluation",
+        "prompt": "Explica qué es un sesgo inconsciente en los procesos de contratación o promoción y propón una acción concreta para reducirlo en tu equipo.",
+        "rubric": "Debe definir el sesgo inconsciente como un prejuicio automático y no deliberado, dar un ejemplo aplicado a contratación o promoción, y proponer al menos una medida concreta (criterios objetivos, paneles diversos, formación específica o revisión 'a ciegas'). Una respuesta válida demuestra entendimiento real de diversidad e inclusión."
+      }
+    }
+  ]
+}

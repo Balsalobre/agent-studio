@@ -1,0 +1,292 @@
+/* =========================================================================
+   AGENT STUDIO BONSAI — design tokens & base styles
+   Dark, minimalist, conversational LXP. Palette: black + coral-orange + tan.
+   Type: Space Grotesk (display/brand) · Hanken Grotesk (UI/body)
+   ========================================================================= */
+
+:root {
+  /* --- Brand palette (from paleta de colores) --- */
+  --c-black:        #000000;
+  --c-orange:       #F56D3E;
+  --c-tan:          #EFC88B;
+  --c-grey:         #7C7C7C;
+  --c-offwhite:     #EEE5E9;
+
+  /* --- Accent (tweakable) --- */
+  --accent:         #2F6CFF;
+  --accent-600:     color-mix(in srgb, var(--accent) 88%, #000);
+  --accent-700:     color-mix(in srgb, var(--accent) 74%, #000);
+  --accent-tint:    color-mix(in srgb, var(--accent) 18%, transparent);
+  --accent-tint-2:  color-mix(in srgb, var(--accent) 11%, transparent);
+  --accent-text:    #FFFFFF;        /* foreground on filled accent */
+  --tan:            #7FA8FF;
+  --tan-tint:       color-mix(in srgb, var(--tan) 16%, transparent);
+
+  /* --- Surfaces (derive from --bg so the whole UI re-tones together) --- */
+  --bg:             #14161C;
+  --surface-1:      color-mix(in srgb, #ffffff 3.5%, var(--bg));
+  --surface-2:      color-mix(in srgb, #ffffff 7%, var(--bg));
+  --surface-3:      color-mix(in srgb, #ffffff 11%, var(--bg));
+  --surface-hover:  rgba(255,255,255,0.05);
+  --rail-bg:        color-mix(in srgb, #000 50%, var(--bg));
+  --tile-bg:        color-mix(in srgb, #000 34%, var(--bg));
+
+  /* --- Lines --- */
+  --line:           rgba(255,255,255,0.09);
+  --line-2:         rgba(255,255,255,0.15);
+  --line-strong:    rgba(255,255,255,0.26);
+
+  /* --- Foreground --- */
+  --fg:             #F6F8FC;
+  --fg-2:           #A9B1C0;
+  --fg-3:           #6E7686;
+  --fg-muted:       #4C5360;
+  --fg-on-accent:   #FFFFFF;
+
+  /* --- Status --- */
+  --success:        #5BD8A0;
+  --warning:        #EFC88B;
+  --danger:         #F0654E;
+
+  /* --- Spacing (8pt) --- */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --space-9: 96px;
+
+  /* --- Radii --- */
+  --r-xs: 6px; --r-sm: 10px; --r-md: 14px; --r-lg: 18px; --r-xl: 24px; --r-2xl: 32px; --r-pill: 999px;
+
+  /* --- Shadows (dark) --- */
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-2: 0 2px 8px rgba(0,0,0,.45), 0 12px 40px rgba(0,0,0,.35);
+  --shadow-pop: 0 8px 40px rgba(0,0,0,.55), 0 2px 10px rgba(0,0,0,.4);
+  --glow-accent: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 8px 30px color-mix(in srgb, var(--accent) 18%, transparent);
+
+  /* --- Type --- */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Hanken Grotesk", ui-sans-serif, -apple-system, system-ui, sans-serif;
+  --ui-scale: 1;
+
+  /* --- Motion --- */
+  --ease: cubic-bezier(.2,.6,.2,1);
+  --ease-emph: cubic-bezier(.2,.8,.2,1);
+  --dur-fast: 130ms; --dur: 220ms; --dur-slow: 360ms;
+
+  /* density */
+  --density: 1;
+}
+
+/* =========================================================================
+   LIGHT THEME — warm educational canvas, dark rail (like the reference)
+   ========================================================================= */
+.app[data-theme="light"] {
+  --bg:             #F3EFEE;
+  --surface-1:      #FFFFFF;
+  --surface-2:      #FFFFFF;
+  --surface-3:      #F0EBE9;
+  --surface-hover:  rgba(20,16,18,0.045);
+  --tile-bg:        #16120F;
+  --rail-bg:        #141113;
+
+  --line:           rgba(20,16,18,0.085);
+  --line-2:         rgba(20,16,18,0.13);
+  --line-strong:    rgba(20,16,18,0.22);
+
+  --fg:             #1C1719;
+  --fg-2:           #5C545A;
+  --fg-3:           #8A8388;
+  --fg-muted:       #ACA6A9;
+
+  --shadow-1:       0 1px 2px rgba(20,16,18,.05);
+  --shadow-2:       0 1px 2px rgba(20,16,18,.05), 0 8px 28px rgba(20,16,18,.07);
+  --shadow-pop:     0 12px 40px rgba(20,16,18,.14), 0 3px 10px rgba(20,16,18,.08);
+  --glow-accent:    0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent), 0 12px 34px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+/* dark rail keeps light-on-dark controls regardless of content theme */
+.app[data-theme="light"] .rail-btn { color: rgba(255,255,255,0.58); }
+.app[data-theme="light"] .rail-btn:hover { color: #fff; background: rgba(255,255,255,0.09); }
+.app[data-theme="light"] .rail-logo { border-color: rgba(255,255,255,0.14); }
+/* soft elevation for white cards on the warm canvas */
+.app[data-theme="light"] .card,
+.app[data-theme="light"] .composer,
+.app[data-theme="light"] .w,
+.app[data-theme="light"] .suggest,
+.app[data-theme="light"] .bubble-user { box-shadow: var(--shadow-1); }
+.app[data-theme="light"] *::-webkit-scrollbar-thumb { background: rgba(20,16,18,0.16); background-clip: content-box; }
+.app[data-theme="light"] *::-webkit-scrollbar-thumb:hover { background: rgba(20,16,18,0.28); background-clip: content-box; }
+.app[data-theme="light"] { scrollbar-color: rgba(20,16,18,0.2) transparent; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: calc(15px * var(--ui-scale));
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.003em;
+}
+#root { height: 100%; }
+
+::selection { background: var(--accent); color: var(--fg-on-accent); }
+
+/* scrollbars */
+* { scrollbar-width: thin; scrollbar-color: rgba(238,229,233,0.16) transparent; }
+*::-webkit-scrollbar { width: 9px; height: 9px; }
+*::-webkit-scrollbar-thumb { background: rgba(238,229,233,0.14); border-radius: 99px; border: 2px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(238,229,233,0.26); background-clip: content-box; }
+
+h1,h2,h3,h4,p { margin: 0; }
+button { font-family: inherit; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+/* --- type helpers --- */
+.display { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.02em; }
+.kicker {
+  font-family: var(--font-ui); font-weight: 600; font-size: 11px;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--fg-3);
+}
+.num { font-family: var(--font-display); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.mono-num { font-variant-numeric: tabular-nums; }
+
+/* =========================================================================
+   APP SHELL
+   ========================================================================= */
+.app {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  background: var(--bg);
+}
+/* Learner area: nav rail + conversations panel + surface. */
+.app.has-threads { grid-template-columns: auto auto 1fr; }
+
+/* ---- Left rail (role / nav) ---- */
+.rail {
+  width: 76px;
+  background: var(--rail-bg);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 0 16px;
+  gap: 14px;
+  z-index: 30;
+}
+.rail-logo {
+  width: 44px; height: 44px; border-radius: 13px;
+  display: grid; place-items: center;
+  background: var(--tile-bg);
+  border: 1px solid var(--line-2);
+  padding: 0; cursor: pointer; color: inherit;
+  transition: border-color var(--dur) var(--ease), transform var(--dur-fast, .12s) var(--ease);
+}
+.rail-logo:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--line-2)); }
+.rail-logo:active { transform: scale(.94); }
+.rail-spacer { flex: 1; }
+.rail-group { display: flex; flex-direction: column; gap: 6px; width: 100%; align-items: center; }
+.rail-btn {
+  position: relative;
+  width: 46px; height: 46px; border-radius: 13px;
+  border: 1px solid transparent; background: transparent;
+  color: var(--fg-3);
+  display: grid; place-items: center;
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.rail-btn:hover { color: var(--fg); background: var(--surface-hover); }
+.rail-btn.active { color: var(--accent); background: var(--accent-tint-2); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+.rail-btn.active::before {
+  content: ""; position: absolute; left: -18px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 22px; border-radius: 99px; background: var(--accent);
+}
+.rail-btn .rail-tip {
+  position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%) translateX(-4px);
+  background: var(--surface-3); color: var(--fg); border: 1px solid var(--line-2);
+  padding: 6px 10px; border-radius: 8px; font-size: 12px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  box-shadow: var(--shadow-2); z-index: 50;
+}
+.rail-btn:hover .rail-tip { opacity: 1; transform: translateY(-50%) translateX(0); }
+.rail-avatar {
+  width: 40px; height: 40px; border-radius: 50%; overflow: hidden;
+  border: 1px solid var(--line-2); display: grid; place-items: center;
+  background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 55%, #000), var(--accent)); color: #fff;
+  font-family: var(--font-display); font-weight: 600; font-size: 15px;
+}
+
+.surface {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* =========================================================================
+   Generic primitives
+   ========================================================================= */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 40px; padding: 0 16px; border-radius: var(--r-sm);
+  border: 1px solid var(--line-2); background: var(--surface-2); color: var(--fg);
+  font-size: 14px; font-weight: 500;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.btn:hover { background: var(--surface-3); border-color: var(--line-strong); }
+.btn:active { transform: scale(.98); }
+.btn-accent { background: var(--accent); border-color: transparent; color: var(--fg-on-accent); font-weight: 600; }
+.btn-accent:hover { background: var(--accent-600); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--fg-2); }
+.btn-ghost:hover { background: var(--surface-hover); color: var(--fg); }
+.btn-sm { height: 32px; padding: 0 12px; font-size: 13px; border-radius: 8px; }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 30px; padding: 0 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--line-2); background: var(--surface-2);
+  color: var(--fg-2); font-size: 12.5px; font-weight: 500; white-space: nowrap;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 5px; height: 22px; padding: 0 9px;
+  border-radius: var(--r-pill); font-size: 11px; font-weight: 600; letter-spacing: .01em;
+  background: var(--accent-tint); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.badge.tan { background: var(--tan-tint); color: var(--tan); border-color: color-mix(in srgb, var(--tan) 28%, transparent); }
+.badge.neutral { background: var(--surface-3); color: var(--fg-2); border-color: var(--line-2); }
+.badge.success { background: color-mix(in srgb, var(--success) 14%, transparent); color: var(--success); border-color: color-mix(in srgb, var(--success) 30%, transparent); }
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+/* progress */
+.track { height: 6px; border-radius: 99px; background: rgba(238,229,233,0.10); overflow: hidden; }
+.track > span { display: block; height: 100%; border-radius: 99px; background: var(--accent); transition: width var(--dur-slow) var(--ease-emph); }
+.track.tan > span { background: var(--tan); }
+
+/* fade/scale in — transform-only so content is never hidden if the timeline is paused */
+@keyframes rise { from { transform: translateY(9px); } to { transform: none; } }
+@keyframes fade { from { opacity: .35; } to { opacity: 1; } }
+.rise { animation: rise var(--dur-slow) var(--ease-emph) both; }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; } }
+
+/* Narrow viewports: drop the conversations panel from the left menu so the
+   chat keeps room (the panel column collapses back to rail + surface). */
+@media (max-width: 860px) {
+  .threads-panel { display: none; }
+  .app.has-threads { grid-template-columns: auto 1fr; }
+}
+
+@media (max-width: 760px) {
+  .rail { width: 100%; height: 60px; flex-direction: row; padding: 0 12px; border-right: none; border-top: 1px solid var(--line); position: fixed; bottom: 0; left: 0; }
+  .app, .app.has-threads { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+  .rail-logo { display: none; }
+  .rail-spacer { display: none; }
+  .rail-group { flex-direction: row; }
+  .rail-btn.active::before { left: 50%; top: auto; bottom: -8px; transform: translateX(-50%); width: 22px; height: 3px; }
+  .rail-btn .rail-tip { display: none; }
+}

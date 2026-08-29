@@ -1,0 +1,11 @@
+{
+  "name": "agent-studio",
+  "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "cd apps/mastra && npm install && npm run build",
+    "start": "cd apps/mastra && npm run start"
+  }
+}
